@@ -1,0 +1,18 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the API code and exported model artifacts
+# (battery_failure_model.pt, scaler.pkl, model_schema.json must be in this folder
+# before building — produced by export_artifacts.py)
+COPY app.py .
+COPY battery_failure_model.pt .
+COPY scaler.pkl .
+COPY model_schema.json .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
